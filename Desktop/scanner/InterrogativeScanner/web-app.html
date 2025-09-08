@@ -1,0 +1,4637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interrogative Scanner - Cybersecurity Learning Hub</title>
+    <style>
+        /* Base styles - Aligned with React Native */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            background-attachment: fixed;
+            color: #FFFFFF;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        /* Authentication Styles - Premium */
+        .auth-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e2139 0%, #2a2d47 100%);
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            position: relative;
+        }
+        
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(0, 122, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(0, 255, 136, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .auth-screen {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .auth-screen.active {
+            display: block;
+        }
+
+        .auth-content {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+                        0 8px 32px rgba(0, 122, 255, 0.1),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .app-logo {
+            margin-bottom: 24px;
+        }
+
+        .logo-circle {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #007AFF 0%, #00D4FF 50%, #00FF88 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0, 122, 255, 0.4),
+                        0 8px 16px rgba(0, 212, 255, 0.3),
+                        inset 0 2px 4px rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes logoGlow {
+            0% { box-shadow: 0 20px 40px rgba(0, 122, 255, 0.4), 0 8px 16px rgba(0, 212, 255, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2); }
+            100% { box-shadow: 0 25px 50px rgba(0, 122, 255, 0.6), 0 10px 20px rgba(0, 212, 255, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.3); }
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 12px 0;
+        }
+
+        .app-tagline {
+            font-size: 16px;
+            color: #8892b0;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .welcome-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .auth-header {
+            margin-bottom: 32px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #4f7cff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            padding: 8px 0;
+        }
+
+        .back-btn:hover {
+            color: #7c3aed;
+        }
+
+        .auth-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 8px 0;
+        }
+
+        .auth-subtitle {
+            font-size: 16px;
+            color: #8892b0;
+            margin: 0;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4f7cff;
+            box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: #8892b0;
+        }
+
+        .password-input {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #8892b0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .password-strength {
+            margin-top: 12px;
+        }
+
+        .strength-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            background: #ff4757;
+            transition: all 0.3s ease;
+        }
+
+        .strength-text {
+            font-size: 12px;
+            color: #8892b0;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            accent-color: #4f7cff;
+        }
+
+        .checkbox-group label {
+            font-size: 14px;
+            color: #8892b0;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .checkbox-group a {
+            color: #4f7cff;
+            text-decoration: none;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        .auth-btn {
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .auth-btn.primary {
+            background: linear-gradient(135deg, #007AFF 0%, #00D4FF 50%, #007AFF 100%);
+            background-size: 200% 200%;
+            color: white;
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.4),
+                        0 4px 12px rgba(0, 212, 255, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .auth-btn.primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .auth-btn.primary:hover::before {
+            left: 100%;
+        }
+
+        .auth-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0, 122, 255, 0.5),
+                        0 6px 16px rgba(0, 212, 255, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .auth-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .auth-btn.ghost {
+            background: transparent;
+            color: #4f7cff;
+        }
+
+        .auth-btn.ghost:hover {
+            background: rgba(79, 124, 255, 0.1);
+        }
+
+        .auth-btn.full-width {
+            width: 100%;
+        }
+
+        .auth-links {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .forgot-link {
+            color: #4f7cff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0 16px;
+            color: #8892b0;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .social-btn.google {
+            border-color: rgba(219, 68, 55, 0.3);
+        }
+
+        .social-btn.apple {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .social-icon {
+            font-size: 16px;
+        }
+
+        .auth-switch {
+            text-align: center;
+            color: #8892b0;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .auth-switch a {
+            color: #4f7cff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .logout {
+            margin-left: auto;
+            background: rgba(255, 71, 87, 0.1);
+            color: #ff4757;
+        }
+
+        .logout:hover {
+            background: rgba(255, 71, 87, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .auth-content {
+                padding: 32px 24px;
+            }
+            
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .app-container::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(0, 122, 255, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(0, 255, 136, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 24px 0;
+            border-bottom: 1px solid rgba(0, 122, 255, 0.3);
+            margin-bottom: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1),
+                        0 4px 12px rgba(0, 122, 255, 0.05),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .header-logo {
+            font-size: 32px;
+            margin-right: 15px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: #8892b0;
+            margin-top: 4px;
+        }
+
+        /* Premium Navigation */
+        .navbar {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(0, 122, 255, 0.2);
+            padding: 8px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3),
+                        0 -4px 16px rgba(0, 122, 255, 0.1),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            height: 80px;
+        }
+
+        .nav-brand {
+            display: none; /* Hide brand in mobile-style bottom nav */
+        }
+
+        .nav-logo {
+            font-size: 24px;
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #007AFF, #00FF88);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .nav-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 60px;
+        }
+
+        .nav-tab-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        /* Active state with neon glow */
+        .nav-tab.active {
+            color: #007AFF;
+            background: rgba(0, 122, 255, 0.2);
+            box-shadow: 0 6px 16px rgba(0, 122, 255, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(0, 122, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 50%, #00ff88 100%);
+            border-radius: 50%;
+            opacity: 0.2;
+            z-index: -1;
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        .nav-tab.active .nav-tab-icon {
+            filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+            transform: scale(1.1);
+        }
+
+        .nav-tab.active .nav-tab-icon svg path,
+        .nav-tab.active .nav-tab-icon svg circle {
+            stroke: url(#activeGradient);
+            fill: url(#activeGradient);
+        }
+
+        .nav-tab.active .nav-tab-label {
+            opacity: 1;
+            text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+        }
+
+        /* Hover effects */
+        .nav-tab:hover:not(.active) {
+            color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab:hover:not(.active) .nav-tab-icon {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 4px rgba(79, 124, 255, 0.4));
+        }
+
+        /* Logout button special styling */
+        .nav-tab.logout {
+            color: rgba(248, 113, 113, 0.8);
+        }
+
+        .nav-tab.logout:hover {
+            color: #f87171;
+        }
+
+        .nav-tab.logout .nav-tab-icon {
+            filter: drop-shadow(0 0 4px rgba(248, 113, 113, 0.3));
+        }
+
+        /* Animations */
+        @keyframes pulseGlow {
+            0%, 100% {
+                opacity: 0.2;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        @keyframes iconFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-2px);
+            }
+        }
+
+        /* Responsive design */
+        @media (min-width: 768px) {
+            .navbar {
+                position: static;
+                transform: none;
+                bottom: auto;
+                left: auto;
+                margin-bottom: 30px;
+                border-radius: 20px;
+                padding: 16px 24px;
+                min-width: auto;
+                justify-content: space-between;
+            }
+
+            .nav-brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .nav-logo {
+                font-size: 28px;
+                filter: drop-shadow(0 0 8px rgba(79, 124, 255, 0.4));
+            }
+
+            .nav-title {
+                font-size: 18px;
+                font-weight: 700;
+                color: white;
+                text-shadow: 0 0 8px rgba(79, 124, 255, 0.3);
+            }
+
+            .nav-tabs {
+                justify-content: flex-end;
+                gap: 12px;
+            }
+
+            .nav-tab {
+                flex-direction: row;
+                padding: 12px 20px;
+                min-width: auto;
+            }
+
+            .nav-tab-icon {
+                margin-bottom: 0;
+                margin-right: 8px;
+            }
+
+            .nav-tab-label {
+                font-size: 14px;
+            }
+        }
+
+        /* Content spacing adjustment for fixed bottom nav */
+        .content {
+            padding-bottom: 120px;
+        }
+
+        @media (min-width: 768px) {
+            .content {
+                padding-bottom: 20px;
+            }
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .learning-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .learning-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #4f7cff, #00ff88);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .learning-subtitle {
+            font-size: 16px;
+            color: #8892b0;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .category-card {
+            background: #2a2d47;
+            border-radius: 16px;
+            padding: 24px;
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(79, 124, 255, 0.2);
+}
+
+.category-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.category-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.category-desc {
+    font-size: 14px;
+    color: #8892b0;
+    line-height: 1.5;
+}
+
+.learning-section {
+    margin-bottom: 50px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.section-icon {
+    font-size: 24px;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+}
+
+.section-subtitle {
+    font-size: 16px;
+    color: #8892b0;
+    margin-bottom: 30px;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.video-card {
+    background: #2a2d47;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(79, 124, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.video-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2),
+                0 12px 24px rgba(0, 122, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(0, 122, 255, 0.4);
+}
+
+.video-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.video-level {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+.video-level.beginner { color: #00ff88; }
+.video-level.intermediate { color: #ff9500; }
+.video-level.advanced { color: #ff4757; }
+
+.video-desc {
+    font-size: 14px;
+    color: #8892b0;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.video-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.video-duration {
+    font-size: 12px;
+    color: #8892b0;
+    font-weight: 500;
+}
+
+.play-button {
+    background: #4f7cff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.play-button:hover {
+    background: #3d6bff;
+}
+
+.docs-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.doc-card {
+    background: #2a2d47;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(79, 124, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.doc-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(79, 124, 255, 0.2);
+}
+
+.doc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.doc-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    flex: 1;
+    margin-right: 12px;
+}
+
+.doc-level {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.doc-desc {
+    font-size: 14px;
+    color: #8892b0;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.doc-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.doc-format {
+    font-size: 12px;
+    color: #8892b0;
+    font-weight: 500;
+}
+
+.read-button {
+    background: #2a2d47;
+    color: #4f7cff;
+    border: 1px solid #4f7cff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.read-button:hover {
+    background: #4f7cff;
+    color: white;
+}
+
+.learning-cta {
+    background: linear-gradient(135deg, #4f7cff, #00ff88);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.cta-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.cta-subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.cta-button {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.cta-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Home Page Styles */
+.hero-section {
+    text-align: center;
+    padding: 60px 20px;
+    margin-bottom: 40px;
+}
+
+.hero-icon {
+    margin-bottom: 30px;
+}
+
+.shield-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #4f7cff, #6b8cff);
+    border-radius: 50%;
+    font-size: 48px;
+    box-shadow: 0 8px 32px rgba(79, 124, 255, 0.3);
+}
+
+.hero-title {
+    font-size: 48px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+}
+
+.hero-subtitle {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 24px;
+    line-height: 1.5;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.start-scanning-btn {
+    background: #007AFF;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+}
+
+.start-scanning-btn:hover {
+    background: #0056CC;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+}
+
+.scan-btn-icon {
+    font-size: 18px;
+}
+
+.view-dashboard-btn {
+    background: transparent;
+    color: #007AFF;
+    border: 1px solid #007AFF;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.view-dashboard-btn:hover {
+    background: rgba(0, 122, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.system-status {
+    background: rgba(26, 26, 46, 0.6);
+    border: 1px solid rgba(0, 122, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.status-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 4px;
+}
+
+.status-subtitle {
+    font-size: 14px;
+    color: #8892b0;
+}
+
+.status-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.api-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #00FF88;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+    animation: pulse 2s infinite;
+}
+
+.status-text {
+    font-size: 14px;
+    color: #8892b0;
+    font-weight: 500;
+}
+
+.total-scans {
+    text-align: right;
+}
+
+.scan-count {
+    font-size: 32px;
+    font-weight: 700;
+    color: #4f7cff;
+    line-height: 1;
+}
+
+.scan-label {
+    font-size: 12px;
+    color: #8892b0;
+    font-weight: 500;
+}
+
+.feature-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.feature-card {
+    background: rgba(26, 26, 46, 0.6);
+    border: 1px solid rgba(0, 122, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 122, 255, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.15);
+}
+
+.feature-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 12px;
+}
+
+.feature-icon.blue { background: rgba(0, 122, 255, 0.2); }
+.feature-icon.green { background: rgba(0, 255, 136, 0.2); }
+.feature-icon.orange { background: rgba(255, 149, 0, 0.2); }
+.feature-icon.red { background: rgba(255, 71, 87, 0.2); }
+
+.feature-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+}
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            color: #8892b0;
+            line-height: 1.5;
+        }
+
+        .secure-cta {
+            background: linear-gradient(135deg, #4f7cff, #6b8cff);
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .cta-main-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .cta-main-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .cta-main-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .start-express-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #4f7cff;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-express-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .learn-more-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .learn-more-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .system-status {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .status-right {
+                justify-content: center;
+            }
+
+            .feature-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-main-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Dashboard Styles */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: #2a2d47;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(79, 124, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: #8892b0;
+            font-weight: 500;
+        }
+
+        .metric-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .metric-icon.blue { background: rgba(79, 124, 255, 0.2); }
+        .metric-icon.red { background: rgba(255, 71, 87, 0.2); }
+        .metric-icon.orange { background: rgba(255, 149, 0, 0.2); }
+        .metric-icon.green { background: rgba(0, 255, 136, 0.2); }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .metric-value.blue { color: #4f7cff; }
+        .metric-value.red { color: #ff4757; }
+        .metric-value.orange { color: #ff9500; }
+        .metric-value.green { color: #00ff88; }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: #2a2d47;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(79, 124, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            min-height: 300px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .chart-subtitle {
+            font-size: 12px;
+            color: #8892b0;
+            font-weight: 500;
+        }
+
+        .chart-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+        }
+
+        .no-data-message {
+            font-size: 14px;
+            color: #8892b0;
+            text-align: center;
+        }
+
+        .recent-scans-section {
+            background: #2a2d47;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(79, 124, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .section-header-dashboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title-dashboard {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .new-scan-btn {
+            background: #2a2d47;
+            color: white;
+            border: 1px solid #8892b0;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .new-scan-btn:hover {
+            background: #4f7cff;
+            border-color: #4f7cff;
+        }
+
+        .recent-scans-content {
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-state {
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-message {
+            font-size: 16px;
+            color: #8892b0;
+            margin-bottom: 20px;
+        }
+
+        .start-first-scan-btn {
+            background: #4f7cff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-first-scan-btn:hover {
+            background: #3d6bff;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header-dashboard {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+        }
+
+        /* Scanner Styles */
+        .scanner-section {
+            background: #2a2d47;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(79, 124, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .scanner-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .scan-type-options {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .scan-type-card {
+            flex: 1;
+            background: #1e2139;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .scan-type-card.active {
+            border-color: #4f7cff;
+            background: rgba(79, 124, 255, 0.1);
+        }
+
+        .scan-type-card:hover {
+            border-color: #4f7cff;
+        }
+
+        .scan-type-icon {
+            font-size: 24px;
+            width: 48px;
+            height: 48px;
+            background: rgba(79, 124, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scan-type-info {
+            flex: 1;
+        }
+
+        .scan-type-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .scan-type-badge {
+            font-size: 12px;
+            color: #4f7cff;
+            background: rgba(79, 124, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .scan-type-description {
+            font-size: 14px;
+            color: #8892b0;
+            line-height: 1.5;
+        }
+
+        .target-options {
+            display: flex;
+            gap: 16px;
+        }
+
+        .target-btn {
+            flex: 1;
+            background: #1e2139;
+            color: #8892b0;
+            border: 2px solid transparent;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .target-btn.active {
+            background: #4f7cff;
+            color: white;
+            border-color: #4f7cff;
+        }
+
+        .target-btn:hover {
+            border-color: #4f7cff;
+            color: white;
+        }
+
+        .target-icon {
+            font-size: 18px;
+        }
+
+        .file-upload-area {
+            border: 2px dashed rgba(79, 124, 255, 0.3);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+        }
+
+        .file-upload-area:hover {
+            border-color: #4f7cff;
+            background: rgba(79, 124, 255, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: #8892b0;
+            margin-bottom: 20px;
+        }
+
+        .choose-file-btn {
+            background: #4f7cff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .choose-file-btn:hover {
+            background: #3d6bff;
+        }
+
+        .btn-icon {
+            font-size: 16px;
+        }
+
+        .supported-formats {
+            font-size: 12px;
+            color: #8892b0;
+            text-align: center;
+        }
+
+        .formats-label {
+            font-weight: 600;
+        }
+
+        .formats-list {
+            margin-left: 4px;
+        }
+
+        .url-input-container {
+            display: flex;
+            gap: 12px;
+        }
+
+        .url-input {
+            flex: 1;
+            background: #1e2139;
+            border: 2px solid rgba(79, 124, 255, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: #4f7cff;
+        }
+
+        .scan-url-btn {
+            background: #4f7cff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scan-url-btn:hover {
+            background: #3d6bff;
+        }
+
+        .selected-file {
+            background: rgba(79, 124, 255, 0.1);
+            border: 1px solid rgba(79, 124, 255, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-icon {
+            font-size: 24px;
+        }
+
+        .file-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #8892b0;
+        }
+
+        .remove-file-btn {
+            background: transparent;
+            color: #8892b0;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-file-btn:hover {
+            color: #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .scan-action {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .start-scan-btn-main {
+            background: linear-gradient(135deg, #4f7cff, #6b8cff);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(79, 124, 255, 0.3);
+        }
+
+        .start-scan-btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 124, 255, 0.4);
+        }
+
+        .scan-btn-icon {
+            font-size: 18px;
+        }
+
+        /* Scan Progress and Results Styles */
+        .scan-progress-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .scan-progress-modal, .scan-results-modal {
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(79, 124, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .scan-progress-header, .scan-results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .scan-progress-header h3, .scan-results-header h3 {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .scan-info {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .scan-type-badge {
+            background: rgba(79, 124, 255, 0.2);
+            color: #4f7cff;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .scan-target {
+            color: #8892b0;
+            font-size: 14px;
+        }
+
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#00d4ff 0deg, rgba(79, 124, 255, 0.2) 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .progress-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .scan-phases {
+            margin-bottom: 10px;
+        }
+
+        .phase {
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #8892b0;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .phase.active {
+            background: rgba(79, 124, 255, 0.1);
+            color: #4f7cff;
+            border-left: 3px solid #4f7cff;
+        }
+
+        .scan-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .scan-status.safe {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .scan-status.warning {
+            background: rgba(255, 157, 0, 0.2);
+            color: #ff9d00;
+        }
+
+        .result-summary {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #8892b0;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: white;
+            font-weight: 600;
+        }
+
+        .result-value.risk-low { color: #00ff88; }
+        .result-value.risk-medium { color: #ff9d00; }
+        .result-value.risk-high { color: #ff4757; }
+
+        .threats-section {
+            background: rgba(255, 71, 87, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ff4757;
+        }
+
+        .threats-section h4 {
+            color: #ff4757;
+            margin-bottom: 10px;
+        }
+
+        .threats-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .threats-list li {
+            color: #ffcdd2;
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .threats-list li:before {
+            content: '⚠️';
+            position: absolute;
+            left: 0;
+        }
+
+        .safe-section {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .safe-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .safe-section p {
+            color: #00ff88;
+            margin: 0;
+        }
+
+        .scan-results-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f7cff, #6b8cff);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 124, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .scan-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: rgba(26, 26, 46, 0.6);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .scan-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .scan-status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .scan-status-indicator.safe {
+            background: #00ff88;
+            box-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+        }
+
+        .scan-status-indicator.warning {
+            background: #ff9d00;
+            box-shadow: 0 0 8px rgba(255, 157, 0, 0.5);
+        }
+
+        .scan-item-name {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .scan-item-time {
+            color: #8892b0;
+            font-size: 12px;
+        }
+
+        .scan-risk-score {
+            font-weight: 700;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .scan-risk-score.risk-low {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .scan-risk-score.risk-medium {
+            background: rgba(255, 157, 0, 0.2);
+            color: #ff9d00;
+        }
+
+        .scan-risk-score.risk-high {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+        }
+
+        @media (max-width: 768px) {
+            .scan-type-options {
+                flex-direction: column;
+            }
+
+            .target-options {
+                flex-direction: column;
+            }
+
+            .url-input-container {
+                flex-direction: column;
+            }
+
+            .scan-progress-modal, .scan-results-modal {
+                padding: 20px;
+                margin: 20px;
+            }
+
+            .scan-results-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .target-options {
+                flex-direction: column;
+            }
+
+            .url-input-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG Definitions for Navigation Icons -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <linearGradient id="activeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#0099cc;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#00ff88;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="inactiveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#94a3b8;stop-opacity:0.8" />
+                <stop offset="100%" style="stop-color:#64748b;stop-opacity:0.8" />
+            </linearGradient>
+        </defs>
+    </svg>
+    <!-- Authentication Screens -->
+    <div id="auth-container" class="auth-container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="auth-screen active">
+            <div class="auth-content">
+                <div class="welcome-header">
+                    <div class="app-logo">
+                        <div class="logo-circle">
+                            <span class="logo-icon">🛡️</span>
+                        </div>
+                    </div>
+                    <h1 class="app-title">Interrogative Scanner</h1>
+                    <p class="app-tagline">Advanced Cybersecurity Protection for Your Digital Assets</p>
+                </div>
+                
+                <div class="welcome-actions">
+                    <button class="auth-btn primary" onclick="showSignup()">Get Started</button>
+                    <button class="auth-btn secondary" onclick="showLogin()">Login</button>
+                    <button class="auth-btn ghost" onclick="showMainApp()">Continue as Guest</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="login-screen" class="auth-screen">
+            <div class="auth-content">
+                <div class="auth-header">
+                    <button class="back-btn" onclick="showAuthScreen('welcome-screen')">← Back</button>
+                    <h2 class="auth-title">Welcome Back</h2>
+                    <p class="auth-subtitle">Sign in to your account</p>
+                </div>
+                
+                <form class="auth-form" id="loginForm">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Password</label>
+                        <div class="password-input">
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('loginPassword')">
+                                👁️‍🗨️
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn primary full-width">Sign In</button>
+                    
+                    <div class="auth-links">
+                        <a href="#" class="forgot-link" onclick="handleForgotPassword()">Forgot Password?</a>
+                    </div>
+                    
+                    <div class="divider">
+                        <span>or continue with</span>
+                    </div>
+                    
+                    <div class="social-buttons">
+                        <button type="button" class="social-btn google" onclick="handleSocialLogin('google')">
+                            <span class="social-icon">G</span>
+                            Google
+                        </button>
+                        <button type="button" class="social-btn apple" onclick="handleSocialLogin('apple')">
+                            <span class="social-icon">🍎</span>
+                            Apple
+                        </button>
+                    </div>
+                    
+                    <p class="auth-switch">
+                        Don't have an account? 
+                        <a href="#" onclick="showSignup()">Sign up</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Signup Screen -->
+        <div id="signup-screen" class="auth-screen">
+            <div class="auth-content">
+                <div class="auth-header">
+                    <button class="back-btn" onclick="showAuthScreen('welcome-screen')">← Back</button>
+                    <h2 class="auth-title">Create Account</h2>
+                    <p class="auth-subtitle">Join us to secure your digital world</p>
+                </div>
+                
+                <form class="auth-form" id="signupForm">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Password</label>
+                        <div class="password-input">
+                            <input type="password" id="signupPassword" placeholder="Create a password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('signupPassword')">
+                                👁️‍🗨️
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill"></div>
+                            </div>
+                            <div class="strength-text"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="termsCheckbox" required>
+                        <label for="termsCheckbox">
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn primary full-width">Create Account</button>
+                    
+                    <div class="divider">
+                        <span>or sign up with</span>
+                    </div>
+                    
+                    <div class="social-buttons">
+                        <button type="button" class="social-btn google" onclick="handleSocialLogin('google')">
+                            <span class="social-icon">G</span>
+                            Google
+                        </button>
+                        <button type="button" class="social-btn apple" onclick="handleSocialLogin('apple')">
+                            <span class="social-icon">🍎</span>
+                            Apple
+                        </button>
+                    </div>
+                    
+                    <p class="auth-switch">
+                        Already have an account? 
+                        <a href="#" onclick="showLogin()">Sign in</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container" id="main-app" style="display: none;">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="nav-logo">🛡️</div>
+                <span class="nav-title">Interrogative Scanner</span>
+            </div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('home')">
+                    <div class="nav-tab-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2.5L2 9.5V22H8V16H16V22H22V9.5L12 2.5Z" stroke="url(#inactiveGradient)" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+                            <path d="M8 16H16V22H8V16Z" stroke="url(#inactiveGradient)" stroke-width="1" fill="none"/>
+                            <circle cx="12" cy="13" r="1" fill="url(#inactiveGradient)" opacity="0.8"/>
+                        </svg>
+                    </div>
+                    <span class="nav-tab-label">Home</span>
+                </button>
+                <button class="nav-tab" onclick="showTab('dashboard')">
+                    <div class="nav-tab-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="7" height="5" rx="1" stroke="url(#inactiveGradient)" stroke-width="1.5" fill="none"/>
+                            <rect x="14" y="3" width="7" height="8" rx="1" stroke="url(#inactiveGradient)" stroke-width="1.5" fill="none"/>
+                            <rect x="3" y="12" width="7" height="9" rx="1" stroke="url(#inactiveGradient)" stroke-width="1.5" fill="none"/>
+                            <rect x="14" y="15" width="7" height="6" rx="1" stroke="url(#inactiveGradient)" stroke-width="1.5" fill="none"/>
+                            <circle cx="6.5" cy="5.5" r="0.8" fill="url(#inactiveGradient)" opacity="0.7"/>
+                            <circle cx="17.5" cy="7" r="0.8" fill="url(#inactiveGradient)" opacity="0.7"/>
+                            <circle cx="6.5" cy="16.5" r="0.8" fill="url(#inactiveGradient)" opacity="0.7"/>
+                            <circle cx="17.5" cy="18" r="0.8" fill="url(#inactiveGradient)" opacity="0.7"/>
+                        </svg>
+                    </div>
+                    <span class="nav-tab-label">Dashboard</span>
+                </button>
+                <button class="nav-tab" onclick="showTab('scanner')">
+                    <div class="nav-tab-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="9" stroke="url(#inactiveGradient)" stroke-width="1.5" fill="none" opacity="0.8"/>
+                            <circle cx="12" cy="12" r="6" stroke="url(#inactiveGradient)" stroke-width="1" fill="none" opacity="0.6"/>
+                            <circle cx="12" cy="12" r="3" stroke="url(#inactiveGradient)" stroke-width="1" fill="none" opacity="0.4"/>
+                            <circle cx="12" cy="12" r="1" fill="url(#inactiveGradient)"/>
+                            <path d="M12 3V6M12 18V21M3 12H6M18 12H21" stroke="url(#inactiveGradient)" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M5.64 5.64L7.76 7.76M16.24 16.24L18.36 18.36M5.64 18.36L7.76 16.24M16.24 7.76L18.36 5.64" stroke="url(#inactiveGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                        </svg>
+                    </div>
+                    <span class="nav-tab-label">Scanner</span>
+                </button>
+                <button class="nav-tab" onclick="showTab('learning')">
+                    <div class="nav-tab-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 19V6.2C4 5.0799 4 4.51984 4.21799 4.09202C4.40973 3.71569 4.71569 3.40973 5.09202 3.21799C5.51984 3 6.0799 3 7.2 3H16.8C17.9201 3 18.4802 3 18.908 3.21799C19.2843 3.40973 19.5903 3.71569 19.782 4.09202C20 4.51984 20 5.0799 20 6.2V17L16 15L12 17L8 15L4 17V19Z" stroke="url(#inactiveGradient)" stroke-width="1.5" fill="none"/>
+                            <circle cx="12" cy="8" r="2" stroke="url(#inactiveGradient)" stroke-width="1" fill="none"/>
+                            <path d="M8 13H16M8 16H14" stroke="url(#inactiveGradient)" stroke-width="1" stroke-linecap="round"/>
+                            <circle cx="12" cy="8" r="0.5" fill="url(#inactiveGradient)" opacity="0.8"/>
+                        </svg>
+                    </div>
+                    <span class="nav-tab-label">Learning</span>
+                </button>
+                <button class="nav-tab logout" onclick="logout()">
+                    <div class="nav-tab-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="#f87171" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16 17L21 12L16 7" stroke="#f87171" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 12H9" stroke="#f87171" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span class="nav-tab-label">Logout</span>
+                </button>
+            </div>
+        </nav> id="home" class="content">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-icon">
+                    <div class="shield-icon">🛡️</div>
+                </div>
+                <h1 class="hero-title">Interrogative Scanner</h1>
+                <p class="hero-subtitle">
+                    Advanced cybersecurity solution that effectively detects and mitigates<br>
+                    phishing, malware, and other cyber threats across multiple content types.
+                </p>
+                <div class="hero-buttons">
+                    <button class="start-scanning-btn" onclick="showTab('scanner')">
+                        ⚡ Start Scanning →
+                    </button>
+                    <button class="view-dashboard-btn" onclick="showTab('dashboard')">
+                        ⚡ View Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="system-status">
+                <div class="status-left">
+                    <h3 class="status-title">System Status</h3>
+                    <p class="status-subtitle">Real-time security monitoring active</p>
+                </div>
+                <div class="status-right">
+                    <div class="api-status">
+                        <div class="status-indicator"></div>
+                        <span class="status-text">API Connected</span>
+                    </div>
+                    <div class="total-scans">
+                        <div class="scan-count">0</div>
+                        <div class="scan-label">Total Scans</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Cards -->
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="feature-icon blue">⚡</div>
+                    <h4 class="feature-title">Express Scanning</h4>
+                    <p class="feature-desc">Lightning-fast threat detection for quick security checks</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon green">👁️</div>
+                    <h4 class="feature-title">Comprehensive Analysis</h4>
+                    <p class="feature-desc">Deep forensic analysis with detailed threat intelligence</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon orange">👥</div>
+                    <h4 class="feature-title">Multiple File Types</h4>
+                    <p class="feature-desc">Scan documents, images, videos, URLs and more</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon red">📈</div>
+                    <h4 class="feature-title">Real-time Monitoring</h4>
+                    <p class="feature-desc">Live threat detection with instant security alerts</p>
+                </div>
+            </div>
+
+            <!-- Ready to Secure CTA -->
+            <div class="secure-cta">
+                <h2 class="cta-main-title">Ready to Secure Your Digital Assets?</h2>
+                <p class="cta-main-subtitle">
+                    Join thousands of users protecting their data with advanced<br>
+                    threat detection.
+                </p>
+                <div class="cta-main-buttons">
+                    <button class="start-express-btn" onclick="showTab('scanner')">Start Express Scan</button>
+                    <button class="learn-more-btn" onclick="showTab('learning')">Learn More</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard" class="content">
+            <!-- Metrics Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">Total Scans</span>
+                        <div class="metric-icon blue">🛡️</div>
+                    </div>
+                    <div class="metric-value blue">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">Threats Found</span>
+                        <div class="metric-icon red">⚠️</div>
+                    </div>
+                    <div class="metric-value red">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">Avg Risk Score</span>
+                        <div class="metric-icon orange">📊</div>
+                    </div>
+                    <div class="metric-value orange">0%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">Confidence</span>
+                        <div class="metric-icon green">✅</div>
+                    </div>
+                    <div class="metric-value green">0%</div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Risk Trend</h3>
+                        <span class="chart-subtitle">Last 7 Scans</span>
+                    </div>
+                    <div class="chart-content">
+                        <div class="no-data-message">No scan data available</div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Threat Distribution</h3>
+                        <span class="chart-subtitle">All Scans</span>
+                    </div>
+                    <div class="chart-content">
+                        <div class="no-data-message">No scan data available</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Scans Section -->
+            <div class="recent-scans-section">
+                <div class="section-header-dashboard">
+                    <h3 class="section-title-dashboard">Recent Scans</h3>
+                    <button class="new-scan-btn" onclick="showTab('scanner')">New Scan</button>
+                </div>
+                <div class="recent-scans-content">
+                    <div class="empty-state">
+                        <div class="empty-icon">🛡️</div>
+                        <div class="empty-message">No scans performed yet</div>
+                        <button class="start-first-scan-btn" onclick="showTab('scanner')">Start Your First Scan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="scanner" class="content">
+            <div id="scannerContent">
+                <div class="scanner-header" style="text-align: center; margin-bottom: 40px;">
+                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 12px; 
+                               background: linear-gradient(135deg, #4f7cff, #00ff88); 
+                               background-clip: text; -webkit-background-clip: text; 
+                               -webkit-text-fill-color: transparent;">Security Scanner</h2>
+                    <p style="color: #8892b0; font-size: 16px;">Advanced threat detection and analysis</p>
+                </div>
+
+                <!-- Scan Type Selection -->
+                <div class="scanner-section" style="margin-bottom: 30px;">
+                    <h3 style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 16px;">Select Scan Type</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="scan-type-card active" onclick="selectScanType('express')" 
+                             style="background: #2a2d47; border: 2px solid #4f7cff; border-radius: 16px; padding: 20px; cursor: pointer; text-align: center;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">⚡</div>
+                            <h4 style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 4px;">Express Scan</h4>
+                            <p style="color: #666; font-size: 14px;">Quick security check</p>
+                        </div>
+                        <div class="scan-type-card" onclick="selectScanType('comprehensive')" 
+                             style="background: #2a2d47; border: 2px solid rgba(79,124,255,0.3); border-radius: 16px; padding: 20px; cursor: pointer; text-align: center;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
+                            <h4 style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 4px;">Deep Analysis</h4>
+                            <p style="color: #666; font-size: 14px;">Comprehensive threat detection</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Target Selection -->
+                <div class="scanner-section" style="margin-bottom: 30px;">
+                    <h3 style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 16px;">Choose Target</h3>
+                    <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                        <button class="target-btn active" onclick="selectTarget('file')" 
+                                style="flex: 1; padding: 12px 20px; background: #4f7cff; color: white; border: none; 
+                                       border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <span>📁</span> File Upload
+                        </button>
+                        <button class="target-btn" onclick="selectTarget('url')" 
+                                style="flex: 1; padding: 12px 20px; background: rgba(79,124,255,0.1); color: #4f7cff; 
+                                       border: 1px solid #4f7cff; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <span>🔗</span> URL Scan
+                        </button>
+                    </div>
+
+                    <!-- File Upload Area -->
+                    <div id="file-upload-section">
+                        <div class="file-upload-area" onclick="document.getElementById('fileInput').click()" 
+                             style="border: 2px dashed rgba(79,124,255,0.3); border-radius: 16px; padding: 40px; text-align: center; 
+                                    background: rgba(255,255,255,0.02); cursor: pointer; transition: all 0.3s ease;">
+                            <div style="font-size: 48px; margin-bottom: 16px; color: #4f7cff;">📤</div>
+                            <h4 style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 8px;">Drop files here to scan</h4>
+                            <p style="color: #666; font-size: 14px; margin-bottom: 20px;">or click to browse your device</p>
+                            <button style="padding: 12px 24px; background: #4f7cff; color: white; border: none; 
+                                           border-radius: 8px; cursor: pointer; font-weight: 600;">Choose File</button>
+                            <input type="file" id="fileInput" style="display: none;" onchange="handleFileSelect(event)">
+                        </div>
+                        <div style="margin-top: 16px; text-align: center;">
+                            <p style="color: #666; font-size: 12px;">Supported: PDF, DOC, TXT, JPG, PNG, GIF, MP4, AVI, MOV, ZIP, EXE</p>
+                        </div>
+                    </div>
+
+                    <!-- URL Scan Area -->
+                    <div id="url-scan-section" style="display: none;">
+                        <div style="background: #2a2d47; border-radius: 16px; padding: 24px;">
+                            <h4 style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 16px;">Enter URL to Scan</h4>
+                            <div style="display: flex; gap: 12px;">
+                                <input type="url" id="urlInput" placeholder="https://example.com" 
+                                       style="flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(79,124,255,0.3); 
+                                              background: rgba(255,255,255,0.05); color: white; font-size: 16px;">
+                                <button onclick="startScan()" 
+                                        style="padding: 12px 24px; background: #4f7cff; color: white; border: none; 
+                                               border-radius: 8px; cursor: pointer; font-weight: 600;">Scan URL</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selected File Display -->
+                <div id="selected-file" style="display: none; background: #2a2d47; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div id="fileIcon" style="font-size: 32px;">📄</div>
+                            <div>
+                                <h4 id="fileName" style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 4px;"></h4>
+                                <p id="fileSize" style="color: #666; font-size: 14px;"></p>
+                            </div>
+                        </div>
+                        <button onclick="removeFile()" 
+                                style="background: rgba(244,67,54,0.1); color: #f44336; border: none; 
+                                       border-radius: 8px; padding: 8px 12px; cursor: pointer;">Remove</button>
+                    </div>
+                </div>
+
+                <!-- Start Scan Button -->
+                <div id="scan-action" style="display: none; text-align: center; margin-bottom: 30px;">
+                    <button onclick="startScan()" 
+                            style="padding: 16px 32px; background: linear-gradient(135deg, #4f7cff, #00ff88); 
+                                   color: white; border: none; border-radius: 12px; cursor: pointer; 
+                                   font-size: 18px; font-weight: 700; box-shadow: 0 8px 32px rgba(79,124,255,0.3);">
+                        🔍 Start Security Scan
+                    </button>
+                </div>
+
+                <!-- Scan Progress -->
+                <div id="scan-progress" style="display: none; background: #2a2d47; border-radius: 16px; padding: 24px; margin-bottom: 20px;">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <h3 style="color: white; font-size: 20px; font-weight: 600; margin-bottom: 8px;">Scanning in Progress</h3>
+                        <p id="scan-phase" style="color: #4f7cff; font-size: 14px;">Initializing scan...</p>
+                    </div>
+                    
+                    <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 4px; margin-bottom: 20px;">
+                        <div id="progress-bar" style="height: 8px; background: linear-gradient(90deg, #4f7cff, #00ff88); 
+                                                     border-radius: 8px; width: 0%; transition: width 0.5s ease;"></div>
+                    </div>
+                    
+                    <div id="scan-details" style="color: #666; font-size: 14px; line-height: 1.6;">
+                        <div>🔍 File signature analysis...</div>
+                    </div>
+                </div>
+
+                <!-- Scan Results -->
+                <div id="scan-results" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div id="home" class="content active">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-icon">
+                    <div class="shield-icon">🛡️</div>
+                </div>
+                <h1 class="hero-title">Interrogative Scanner</h1>
+                <p class="hero-subtitle">
+                    Advanced cybersecurity solution that effectively detects and mitigates<br>
+                    phishing, malware, and other cyber threats across multiple content types.
+                </p>
+                <div class="hero-buttons">
+                    <button class="start-scanning-btn" onclick="showTab('scanner')">
+                        ⚡ Start Scanning →
+                    </button>
+                    <button class="view-dashboard-btn" onclick="showTab('dashboard')">
+                        ⚡ View Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="system-status">
+                <div class="status-left">
+                    <h3 class="status-title">System Status</h3>
+                    <p class="status-subtitle">Real-time security monitoring active</p>
+                </div>
+                <div class="status-right">
+                    <div class="api-status">
+                        <div class="status-indicator"></div>
+                        <span class="status-text">API Connected</span>
+                    </div>
+                    <div class="total-scans">
+                        <div class="scan-count">0</div>
+                        <div class="scan-label">Total Scans</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Cards -->
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="feature-icon blue">⚡</div>
+                    <h4 class="feature-title">Express Scanning</h4>
+                    <p class="feature-desc">Lightning-fast threat detection for quick security checks</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon green">👁️</div>
+                    <h4 class="feature-title">Comprehensive Analysis</h4>
+                    <p class="feature-desc">Deep forensic analysis with detailed threat intelligence</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon orange">👥</div>
+                    <h4 class="feature-title">Multiple File Types</h4>
+                    <p class="feature-desc">Scan documents, images, videos, URLs and more</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon red">📈</div>
+                    <h4 class="feature-title">Real-time Monitoring</h4>
+                    <p class="feature-desc">Live threat detection with instant security alerts</p>
+                </div>
+            </div>
+
+            <!-- Ready to Secure CTA -->
+            <div class="secure-cta">
+                <h2 class="cta-main-title">Ready to Secure Your Digital Assets?</h2>
+                <p class="cta-main-subtitle">
+                    Join thousands of users protecting their data with advanced<br>
+                    threat detection.
+                </p>
+                <div class="cta-main-buttons">
+                    <button class="start-express-btn" onclick="showTab('scanner')">Start Express Scan</button>
+                    <button class="learn-more-btn" onclick="showTab('learning')">Learn More</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="learning" class="content">
+            <div class="learning-header">
+                <h1 class="learning-title">Cybersecurity Learning Hub</h1>
+                <p class="learning-subtitle">
+                    Enhance your cybersecurity knowledge with curated educational resources, from
+                    beginner fundamentals to advanced threat analysis.
+                </p>
+            </div>
+
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon">🛡️</div>
+                    <div class="category-title">Getting Started</div>
+                    <div class="category-desc">Essential cybersecurity knowledge for everyone</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">👤</div>
+                    <div class="category-title">Avoiding Phishing</div>
+                    <div class="category-desc">Protect yourself from email and social engineering attacks</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">📱</div>
+                    <div class="category-title">Mobile Safety</div>
+                    <div class="category-desc">Secure your mobile devices and applications</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🦠</div>
+                    <div class="category-title">Malware 101</div>
+                    <div class="category-desc">Understand and defend against malicious software</div>
+                </div>
+            </div>
+
+            <div class="learning-section">
+                <div class="section-header">
+                    <div class="section-icon">▶️</div>
+                    <div class="section-title">Video Tutorials</div>
+                </div>
+                <div class="section-subtitle">Interactive learning through expert-led videos</div>
+
+                <div class="video-grid">
+                    <div class="video-card" onclick="window.open('https://www.youtube.com/watch?v=inWWhr5tnEA', '_blank')">
+                        <div class="video-title">Cybersecurity Fundamentals</div>
+                        <div class="video-level beginner">Beginner</div>
+                        <div class="video-desc">Essential concepts for understanding modern cybersecurity threats</div>
+                        <div class="video-meta">
+                            <div class="video-duration">15 min</div>
+                            <button class="play-button">▶️ Watch</button>
+                        </div>
+                    </div>
+                    <div class="video-card" onclick="window.open('https://www.youtube.com/watch?v=z5nc1O_QJLA', '_blank')">
+                        <div class="video-title">Phishing Attack Prevention</div>
+                        <div class="video-level beginner">Beginner</div>
+                        <div class="video-desc">Learn to identify and prevent phishing attacks in your daily life</div>
+                        <div class="video-meta">
+                            <div class="video-duration">12 min</div>
+                            <button class="play-button">▶️ Watch</button>
+                        </div>
+                    </div>
+                    <div class="video-card" onclick="window.open('https://www.youtube.com/watch?v=GSIDS_lvRv4', '_blank')">
+                        <div class="video-title">Mobile Security Best Practices</div>
+                        <div class="video-level intermediate">Intermediate</div>
+                        <div class="video-desc">Secure your mobile devices against modern threats</div>
+                        <div class="video-meta">
+                            <div class="video-duration">18 min</div>
+                            <button class="play-button">▶️ Watch</button>
+                        </div>
+                    </div>
+                    <div class="video-card" onclick="window.open('https://www.youtube.com/watch?v=VVJldn_MmMY', '_blank')">
+                        <div class="video-title">Malware Analysis Basics</div>
+                        <div class="video-level advanced">Advanced</div>
+                        <div class="video-desc">Understanding how malware works and how to detect it</div>
+                        <div class="video-meta">
+                            <div class="video-duration">25 min</div>
+                            <button class="play-button">▶️ Watch</button>
+                        </div>
+                    </div>
+                    <div class="video-card" onclick="window.open('https://www.youtube.com/watch?v=lc7scxvKQOo', '_blank')">
+                        <div class="video-title">Social Engineering Tactics</div>
+                        <div class="video-level intermediate">Intermediate</div>
+                        <div class="video-desc">Recognize and defend against social engineering attacks</div>
+                        <div class="video-meta">
+                            <div class="video-duration">20 min</div>
+                            <button class="play-button">▶️ Watch</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="learning-section">
+                <div class="section-header">
+                    <div class="section-icon">📄</div>
+                    <div class="section-title">Documentation & Guides</div>
+                </div>
+                <div class="section-subtitle">In-depth resources and official security guidelines</div>
+
+                <div class="docs-grid">
+                    <div class="doc-card" onclick="window.open('https://www.nist.gov/system/files/documents/cyberframework/cybersecurity-framework-021214.pdf', '_blank')">
+                        <div class="doc-header">
+                            <div class="doc-title">NIST Cybersecurity Framework</div>
+                            <div class="doc-level advanced">Advanced</div>
+                        </div>
+                        <div class="doc-desc">Comprehensive framework for improving critical infrastructure cybersecurity</div>
+                        <div class="doc-meta">
+                            <div class="doc-format">PDF • 1.2 MB</div>
+                            <button class="read-button">📄 Read</button>
+                        </div>
+                    </div>
+                    <div class="doc-card" onclick="window.open('https://owasp.org/www-project-top-ten/2017/OWASP_Top_10-2017_%28en%29.pdf', '_blank')">
+                        <div class="doc-header">
+                            <div class="doc-title">OWASP Top 10 Web Application Security Risks</div>
+                            <div class="doc-level intermediate">Intermediate</div>
+                        </div>
+                        <div class="doc-desc">Most critical web application security risks facing organizations</div>
+                        <div class="doc-meta">
+                            <div class="doc-format">PDF • 850 KB</div>
+                            <button class="read-button">📄 Read</button>
+                        </div>
+                    </div>
+                    <div class="doc-card" onclick="window.open('https://www.cisa.gov/sites/default/files/publications/ncsam-cybersecurity-guide_508.pdf', '_blank')">
+                        <div class="doc-header">
+                            <div class="doc-title">Personal Cybersecurity Guide</div>
+                            <div class="doc-level beginner">Beginner</div>
+                        </div>
+                        <div class="doc-desc">Step-by-step guide to securing your personal digital life</div>
+                        <div class="doc-meta">
+                            <div class="doc-format">PDF • 2.1 MB</div>
+                            <button class="read-button">📄 Read</button>
+                        </div>
+                    </div>
+                    <div class="doc-card" onclick="window.open('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf', '_blank')">
+                        <div class="doc-header">
+                            <div class="doc-title">Incident Response Planning</div>
+                            <div class="doc-level advanced">Advanced</div>
+                        </div>
+                        <div class="doc-desc">Best practices for creating and implementing incident response plans</div>
+                        <div class="doc-meta">
+                            <div class="doc-format">PDF • 1.8 MB</div>
+                            <button class="read-button">📄 Read</button>
+                        </div>
+                    </div>
+                    <div class="doc-card" onclick="window.open('https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-124r1.pdf', '_blank')">
+                        <div class="doc-header">
+                            <div class="doc-title">Mobile Device Security Guidelines</div>
+                            <div class="doc-level intermediate">Intermediate</div>
+                        </div>
+                        <div class="doc-desc">Comprehensive mobile security recommendations for users and organizations</div>
+                        <div class="doc-meta">
+                            <div class="doc-format">PDF • 1.5 MB</div>
+                            <button class="read-button">📄 Read</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="learning-cta">
+                <div class="cta-title">Keep Learning, Stay Secure</div>
+                <div class="cta-subtitle">
+                    Cybersecurity is an ongoing journey. Regular education helps you stay ahead of emerging threats.
+                </div>
+                <div class="cta-buttons">
+                    <a href="https://www.cisa.gov/news-events/cybersecurity-advisories" target="_blank" class="cta-button">📧 Security Newsletter</a>
+                    <a href="https://www.reddit.com/r/cybersecurity/" target="_blank" class="cta-button">👥 Join Community</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedScanType = 'express';
+        let selectedTarget = 'file';
+
+        // Authentication Functions
+        function showAuthScreen(screenName) {
+            const screens = document.querySelectorAll('.auth-screen');
+            screens.forEach(screen => screen.classList.remove('active'));
+            document.getElementById(screenName + '-screen').classList.add('active');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (email && password) {
+                isAuthenticated = true;
+                showMainApp();
+                alert('Login successful! Welcome to Interrogative Scanner.');
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm').value;
+            const termsAccepted = document.getElementById('terms-checkbox').checked;
+            
+            if (!document.getElementById('terms-checkbox').checked) {
+                alert('Please accept the Terms of Service and Privacy Policy.');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+            
+            if (name && email && password) {
+                isAuthenticated = true;
+                showMainApp();
+                alert('Account created successfully! Welcome to Interrogative Scanner.');
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        function handleSocialLogin(provider) {
+            alert(`${provider} login - Feature coming soon!`);
+        }
+
+        function continueAsGuest() {
+            isAuthenticated = true;
+            showMainApp();
+            alert('Continuing as guest user. Some features may be limited.');
+        }
+
+        function showMainApp() {
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+        }
+
+        function logout() {
+            isAuthenticated = false;
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('auth-container').style.display = 'flex';
+            showAuthScreen('welcome');
+            
+            // Reset forms
+            document.querySelectorAll('.auth-form').forEach(form => form.reset());
+            updatePasswordStrength();
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+
+        function updatePasswordStrength() {
+            const password = document.getElementById('signup-password')?.value || '';
+            const strengthFill = document.querySelector('.strength-fill');
+            const strengthLabel = document.getElementById('strength-label');
+            
+            if (!strengthFill || !strengthLabel) return;
+            
+            let strength = 0;
+            const checks = [
+                password.length >= 8,
+                /[A-Z]/.test(password),
+                /[a-z]/.test(password),
+                /[0-9]/.test(password),
+                /[^A-Za-z0-9]/.test(password)
+            ];
+            
+            strength = checks.filter(Boolean).length;
+            
+            const levels = [
+                { label: 'Very Weak', color: '#ff4757', width: '20%' },
+                { label: 'Weak', color: '#ff6b7a', width: '40%' },
+                { label: 'Fair', color: '#ffa502', width: '60%' },
+                { label: 'Good', color: '#2ed573', width: '80%' },
+                { label: 'Strong', color: '#00d2d3', width: '100%' }
+            ];
+            
+            const level = levels[Math.min(strength, 4)];
+            strengthFill.style.width = level.width;
+            strengthFill.style.background = level.color;
+            strengthLabel.textContent = level.label;
+            strengthLabel.style.color = level.color;
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user was previously authenticated (you could use localStorage here)
+            if (!isAuthenticated) {
+                showAuthScreen('welcome');
+            }
+        });
+
+        function showTab(tabName) {
+            // Hide all content
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function selectScanType(type) {
+            selectedScanType = type;
+            
+            // Update active state
+            document.querySelectorAll('.scan-type-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Update description
+            const description = document.querySelector('.scan-type-description');
+            if (type === 'express') {
+                description.textContent = 'Quick security check with basic threat detection and risk assessment.';
+            } else {
+                description.textContent = 'Deep forensic analysis with detailed threat intelligence and comprehensive reporting.';
+            }
+        }
+
+        function selectTarget(target) {
+            selectedTarget = target;
+            
+            // Update active state
+            document.querySelectorAll('.target-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Show/hide sections
+            const fileSection = document.getElementById('file-upload-section');
+            const urlSection = document.getElementById('url-scan-section');
+            
+            if (target === 'file') {
+                fileSection.style.display = 'block';
+                urlSection.style.display = 'none';
+            } else {
+                fileSection.style.display = 'none';
+                urlSection.style.display = 'block';
+            }
+            
+            // Hide scan action if switching targets
+            document.getElementById('scan-action').style.display = 'none';
+            document.getElementById('selected-file').style.display = 'none';
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                
+                // Show selected file info
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileSize').textContent = formatFileSize(file.size);
+                document.getElementById('selected-file').style.display = 'flex';
+                document.getElementById('scan-action').style.display = 'block';
+            }
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('selected-file').style.display = 'none';
+            document.getElementById('scan-action').style.display = 'none';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function startScan() {
+            const scanType = document.querySelector('.scan-type-card.active .scan-type-name').textContent;
+            const targetType = document.querySelector('.target-card.active .target-name').textContent;
+            const fileName = document.getElementById('fileName')?.textContent || 'Unknown file';
+            
+            // Show scanning progress
+            showScanProgress(scanType, targetType, fileName);
+        }
+
+        function showScanProgress(scanType, targetType, fileName) {
+            // Create scan progress overlay
+            const progressOverlay = document.createElement('div');
+            progressOverlay.className = 'scan-progress-overlay';
+            progressOverlay.innerHTML = `
+                <div class="scan-progress-modal">
+                    <div class="scan-progress-header">
+                        <h3>Scanning in Progress</h3>
+                        <div class="scan-info">
+                            <span class="scan-type-badge">${scanType}</span>
+                            <span class="scan-target">${targetType}: ${fileName}</span>
+                        </div>
+                    </div>
+                    <div class="scan-progress-content">
+                        <div class="progress-circle">
+                            <div class="progress-value">0%</div>
+                        </div>
+                        <div class="scan-phases">
+                            <div class="phase active">🔍 Initializing scan...</div>
+                            <div class="phase">🛡️ Analyzing file structure...</div>
+                            <div class="phase">⚠️ Checking for threats...</div>
+                            <div class="phase">📊 Generating report...</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(progressOverlay);
+            
+            // Simulate scan progress
+            simulateScanProgress(scanType, targetType, fileName, progressOverlay);
+        }
+
+        function simulateScanProgress(scanType, targetType, fileName, overlay) {
+            let progress = 0;
+            let phaseIndex = 0;
+            const phases = overlay.querySelectorAll('.phase');
+            const progressValue = overlay.querySelector('.progress-value');
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 15 + 5; // Random progress increment
+                
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // Complete scan and show results
+                    setTimeout(() => {
+                        completeScan(scanType, targetType, fileName, overlay);
+                    }, 1000);
+                }
+                
+                // Update progress display
+                progressValue.textContent = Math.round(progress) + '%';
+                
+                // Update phases
+                const currentPhase = Math.floor((progress / 100) * phases.length);
+                if (currentPhase > phaseIndex && currentPhase < phases.length) {
+                    phases[phaseIndex].classList.remove('active');
+                    phases[currentPhase].classList.add('active');
+                    phaseIndex = currentPhase;
+                }
+                
+            }, 200 + Math.random() * 300); // Variable timing for realism
+        }
+
+        function completeScan(scanType, targetType, fileName, overlay) {
+            // Generate realistic scan results
+            const scanResult = generateScanResult(scanType, fileName);
+            
+            // Update user statistics
+            updateUserStats(scanResult);
+            
+            // Show scan results
+            showScanResults(scanResult, overlay);
+            
+            // Update dashboard if visible
+            updateDashboard();
+        }
+
+        function generateScanResult(scanType, fileName) {
+            const timestamp = new Date();
+            const isComprehensive = scanType.includes('Comprehensive');
+            
+            // Generate realistic results based on file type and scan type
+            const fileExt = fileName.split('.').pop()?.toLowerCase() || 'unknown';
+            let riskScore = 0;
+            let threats = [];
+            let confidence = 95;
+            
+            // Simulate different risk levels based on file type
+            if (['exe', 'bat', 'cmd', 'scr'].includes(fileExt)) {
+                riskScore = Math.random() * 30 + 10; // 10-40% risk for executables
+                if (riskScore > 25) {
+                    threats.push('Potential executable threat detected');
+                }
+            } else if (['pdf', 'doc', 'docx'].includes(fileExt)) {
+                riskScore = Math.random() * 15 + 2; // 2-17% risk for documents
+                if (riskScore > 12) {
+                    threats.push('Suspicious document structure');
+                }
+            } else {
+                riskScore = Math.random() * 10 + 1; // 1-11% risk for other files
+            }
+            
+            // Adjust confidence based on scan type
+            if (!isComprehensive) {
+                confidence = Math.max(75, confidence - Math.random() * 20);
+            }
+            
+            return {
+                id: Date.now(),
+                fileName: fileName,
+                scanType: scanType,
+                timestamp: timestamp,
+                riskScore: Math.round(riskScore),
+                threats: threats,
+                confidence: Math.round(confidence),
+                status: threats.length > 0 ? 'warning' : 'safe',
+                duration: isComprehensive ? '45s' : '12s'
+            };
+        }
+
+        function updateUserStats(scanResult) {
+            userStats.totalScans++;
+            userStats.threatsFound += scanResult.threats.length;
+            userStats.lastScanTime = scanResult.timestamp;
+            
+            // Calculate average risk score
+            if (userStats.scanHistory.length === 0) {
+                userStats.avgRiskScore = scanResult.riskScore;
+            } else {
+                const totalRisk = userStats.scanHistory.reduce((sum, scan) => sum + scan.riskScore, 0) + scanResult.riskScore;
+                userStats.avgRiskScore = Math.round(totalRisk / (userStats.scanHistory.length + 1));
+            }
+            
+            // Calculate average confidence
+            if (userStats.scanHistory.length === 0) {
+                userStats.confidence = scanResult.confidence;
+            } else {
+                const totalConfidence = userStats.scanHistory.reduce((sum, scan) => sum + scan.confidence, 0) + scanResult.confidence;
+                userStats.confidence = Math.round(totalConfidence / (userStats.scanHistory.length + 1));
+            }
+            
+            // Add to scan history
+            userStats.scanHistory.unshift(scanResult);
+            
+            // Keep only last 50 scans
+            if (userStats.scanHistory.length > 50) {
+                userStats.scanHistory = userStats.scanHistory.slice(0, 50);
+            }
+        }
+
+        function showScanResults(result, overlay) {
+            overlay.innerHTML = `
+                <div class="scan-results-modal">
+                    <div class="scan-results-header">
+                        <h3>Scan Complete</h3>
+                        <div class="scan-status ${result.status}">
+                            ${result.status === 'safe' ? '✅ Safe' : '⚠️ Threats Detected'}
+                        </div>
+                    </div>
+                    <div class="scan-results-content">
+                        <div class="result-summary">
+                            <div class="result-item">
+                                <span class="result-label">File:</span>
+                                <span class="result-value">${result.fileName}</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Risk Score:</span>
+                                <span class="result-value risk-${result.riskScore > 20 ? 'high' : result.riskScore > 10 ? 'medium' : 'low'}">${result.riskScore}%</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Confidence:</span>
+                                <span class="result-value">${result.confidence}%</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Scan Duration:</span>
+                                <span class="result-value">${result.duration}</span>
+                            </div>
+                        </div>
+                        ${result.threats.length > 0 ? `
+                            <div class="threats-section">
+                                <h4>Threats Detected:</h4>
+                                <ul class="threats-list">
+                                    ${result.threats.map(threat => `<li>${threat}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : `
+                            <div class="safe-section">
+                                <div class="safe-icon">🛡️</div>
+                                <p>No threats detected. Your file appears to be safe.</p>
+                            </div>
+                        `}
+                    </div>
+                    <div class="scan-results-actions">
+                        <button class="btn-secondary" onclick="closeScanResults()">Close</button>
+                        <button class="btn-primary" onclick="showTab('dashboard'); closeScanResults();">View Dashboard</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeScanResults() {
+            const overlay = document.querySelector('.scan-progress-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+
+        function updateDashboard() {
+            // Update metric cards
+            const totalScansElement = document.querySelector('.metrics-grid .metric-card:nth-child(1) .metric-value');
+            const threatsFoundElement = document.querySelector('.metrics-grid .metric-card:nth-child(2) .metric-value');
+            const avgRiskElement = document.querySelector('.metrics-grid .metric-card:nth-child(3) .metric-value');
+            const confidenceElement = document.querySelector('.metrics-grid .metric-card:nth-child(4) .metric-value');
+            
+            if (totalScansElement) totalScansElement.textContent = userStats.totalScans;
+            if (threatsFoundElement) threatsFoundElement.textContent = userStats.threatsFound;
+            if (avgRiskElement) avgRiskElement.textContent = userStats.avgRiskScore + '%';
+            if (confidenceElement) confidenceElement.textContent = userStats.confidence + '%';
+            
+            // Update home page total scans
+            const homeScansElement = document.querySelector('.total-scans .scan-count');
+            if (homeScansElement) homeScansElement.textContent = userStats.totalScans;
+            
+            // Update recent scans section
+            updateRecentScans();
+        }
+
+        function updateRecentScans() {
+            const recentScansContent = document.querySelector('.recent-scans-content');
+            if (!recentScansContent) return;
+            
+            if (userStats.scanHistory.length === 0) {
+                recentScansContent.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🛡️</div>
+                        <div class="empty-message">No scans performed yet</div>
+                        <button class="start-first-scan-btn" onclick="showTab('scanner')">Start Your First Scan</button>
+                    </div>
+                `;
+            } else {
+                const recentScans = userStats.scanHistory.slice(0, 5);
+                recentScansContent.innerHTML = recentScans.map(scan => `
+                    <div class="scan-item">
+                        <div class="scan-item-left">
+                            <div class="scan-status-indicator ${scan.status}"></div>
+                            <div class="scan-item-info">
+                                <div class="scan-item-name">${scan.fileName}</div>
+                                <div class="scan-item-time">${formatTimeAgo(scan.timestamp)}</div>
+                            </div>
+                        </div>
+                        <div class="scan-item-right">
+                            <div class="scan-risk-score risk-${scan.riskScore > 20 ? 'high' : scan.riskScore > 10 ? 'medium' : 'low'}">
+                                ${scan.riskScore}%
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function formatTimeAgo(timestamp) {
+            const now = new Date();
+            const diff = now - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            return `${days}d ago`;
+        }
+
+        function showAuthScreen(screen) {
+            // Hide all screens
+            document.querySelectorAll('.auth-screen').forEach(s => s.classList.remove('active'));
+            document.querySelector('.app-container').style.display = 'none';
+            document.getElementById('auth-container').style.display = 'flex';
+            
+            // Show requested screen
+            document.getElementById(screen).classList.add('active');
+        }
+
+        function showMainApp() {
+            document.getElementById('auth-container').style.display = 'none';
+            document.querySelector('.app-container').style.display = 'block';
+            showTab('learning'); // Start with learning tab like mobile app
+            initializeMobileFeatures();
+        }
+
+        function showWelcome() {
+            showAuthScreen('welcome-screen');
+        }
+
+        function showLogin() {
+            showAuthScreen('login-screen');
+        }
+
+        function showSignup() {
+            showAuthScreen('signup-screen');
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '👁️';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️‍🗨️';
+            }
+        }
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let feedback = [];
+            
+            if (password.length >= 8) strength += 25;
+            else feedback.push('At least 8 characters');
+            
+            if (/[A-Z]/.test(password)) strength += 25;
+            else feedback.push('One uppercase letter');
+            
+            if (/[a-z]/.test(password)) strength += 25;
+            else feedback.push('One lowercase letter');
+            
+            if (/[0-9]/.test(password)) strength += 25;
+            else feedback.push('One number');
+            
+            return { strength, feedback };
+        }
+
+        function updatePasswordStrength() {
+            const password = document.getElementById('signupPassword').value;
+            const { strength, feedback } = checkPasswordStrength(password);
+            
+            const strengthBar = document.querySelector('.strength-fill');
+            const strengthText = document.querySelector('.strength-text');
+            
+            strengthBar.style.width = strength + '%';
+            
+            if (strength < 50) {
+                strengthBar.style.background = '#ff4757';
+                strengthText.textContent = 'Weak - ' + feedback.join(', ');
+                strengthText.style.color = '#ff4757';
+            } else if (strength < 75) {
+                strengthBar.style.background = '#ff9500';
+                strengthText.textContent = 'Medium - ' + feedback.join(', ');
+                strengthText.style.color = '#ff9500';
+            } else {
+                strengthBar.style.background = '#00ff88';
+                strengthText.textContent = 'Strong password';
+                strengthText.style.color = '#00ff88';
+            }
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            // Simulate login process
+            const loginButton = document.querySelector('#login-screen .auth-btn.primary');
+            const originalText = loginButton.textContent;
+            loginButton.textContent = 'Signing In...';
+
+            if (selectedTarget === 'file' && !selectedFile) {
+                alert('Please select a file to scan');
+                return;
+            }
+            
+            if (selectedTarget === 'url') {
+                const url = document.getElementById('urlInput').value;
+                if (!url) {
+                    alert('Please enter a URL to scan');
+                    return;
+                }
+            }
+            
+            // Simulate scan process
+            alert(`Starting ${selectedScanType} scan...`);
+            
+            // In a real app, this would trigger the actual scanning process
+            setTimeout(() => {
+                alert('Scan completed! Check the Dashboard for results.');
+                showTab('dashboard');
+            }, 2000);
+        }
+
+        // Drag and drop functionality
+        function setupDragAndDrop() {
+            const uploadArea = document.querySelector('.file-upload-area');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight(e) {
+                uploadArea.style.borderColor = '#4f7cff';
+                uploadArea.style.background = 'rgba(79, 124, 255, 0.1)';
+            }
+            
+            function unhighlight(e) {
+                uploadArea.style.borderColor = 'rgba(79, 124, 255, 0.3)';
+                uploadArea.style.background = 'transparent';
+            }
+            
+            uploadArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    const file = files[0];
+                    selectedFile = file;
+                    
+                    // Update file input
+                    const fileInput = document.getElementById('fileInput');
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+                    
+                    // Show selected file info
+                    document.getElementById('fileName').textContent = file.name;
+                    document.getElementById('fileSize').textContent = formatFileSize(file.size);
+                    document.getElementById('selected-file').style.display = 'flex';
+                    document.getElementById('scan-action').style.display = 'block';
+                }
+            }
+        }
+        
+        // Enhanced Global state - Mobile App Features
+        let isAuthenticated = false;
+        let currentUser = null;
+        let activeTab = 'learning'; // Start with learning tab like mobile
+        let searchQuery = '';
+        let selectedFilter = 'All';
+        let activeSubTab = 'Videos';
+        let bookmarkedVideos = [];
+        let bookmarkedDocuments = [];
+        let downloadProgress = {};
+        let selectedFile = null;
+        let isScanning = false;
+        let scanProgress = 0;
+        let scanPhase = '';
+        let urlInput = '';
+        let scanResults = {
+            scannedItems: 0,
+            threatsDetected: 0,
+            estimatedTime: '0s'
+        };
+        let detailsExpanded = false;
+        let currentScanId = null;
+        
+        // Enhanced Learning Data - Mobile App Features
+        const learningVideos = [
+            {
+                id: 1,
+                title: "Introduction to Cybersecurity",
+                description: "Learn the fundamentals of cybersecurity and threat detection. This comprehensive guide covers basic security principles, common threats, and protection strategies.",
+                duration: "15:30",
+                difficulty: "Beginner",
+                thumbnail: "https://img.youtube.com/vi/inWWhr5tnEA/maxresdefault.jpg",
+                youtubeId: "inWWhr5tnEA",
+                channel: "Cybersecurity Basics",
+                views: "125K",
+                bookmarked: false,
+                category: "fundamentals"
+            },
+            {
+                id: 2,
+                title: "Advanced Malware Analysis",
+                description: "Deep dive into malware detection and analysis techniques. Learn reverse engineering, behavioral analysis, and advanced threat hunting.",
+                duration: "28:45",
+                difficulty: "Advanced",
+                thumbnail: "https://img.youtube.com/vi/VVJldn_MmMY/maxresdefault.jpg",
+                youtubeId: "VVJldn_MmMY",
+                channel: "Security Experts",
+                views: "89K",
+                bookmarked: false,
+                category: "malware"
+            },
+            {
+                id: 3,
+                title: "Network Security Fundamentals",
+                description: "Understanding network vulnerabilities and protection methods. Covers firewalls, intrusion detection, and network monitoring.",
+                duration: "22:15",
+                difficulty: "Intermediate",
+                thumbnail: "https://img.youtube.com/vi/qiQR5rTSshw/maxresdefault.jpg",
+                youtubeId: "qiQR5rTSshw",
+                channel: "Network Security Pro",
+                views: "67K",
+                bookmarked: false,
+                category: "network"
+            },
+            {
+                id: 4,
+                title: "Incident Response Planning",
+                description: "Learn how to create and implement effective incident response procedures for cybersecurity threats.",
+                duration: "19:22",
+                difficulty: "Intermediate",
+                thumbnail: "https://img.youtube.com/vi/example4/maxresdefault.jpg",
+                youtubeId: "example4",
+                channel: "IR Specialists",
+                views: "45K",
+                bookmarked: false,
+                category: "response"
+            },
+            {
+                id: 5,
+                title: "Penetration Testing Basics",
+                description: "Introduction to ethical hacking and penetration testing methodologies for security assessment.",
+                duration: "31:18",
+                difficulty: "Advanced",
+                thumbnail: "https://img.youtube.com/vi/example5/maxresdefault.jpg",
+                youtubeId: "example5",
+                channel: "PenTest Academy",
+                views: "78K",
+                bookmarked: false,
+                category: "testing"
+            }
+        ];
+
+        const learningDocuments = [
+            {
+                id: 1,
+                title: "NIST Cybersecurity Framework",
+                description: "Comprehensive guide to implementing the NIST Cybersecurity Framework in your organization.",
+                author: "NIST",
+                type: "PDF",
+                difficulty: "Intermediate",
+                fileSize: "2.4 MB",
+                pages: 55,
+                downloadUrl: "https://www.nist.gov/cyberframework/framework",
+                bookmarked: false,
+                category: "frameworks"
+            },
+            {
+                id: 2,
+                title: "OWASP Top 10 Security Risks",
+                description: "The most critical web application security risks and how to mitigate them effectively.",
+                author: "OWASP Foundation",
+                type: "Guide",
+                difficulty: "Beginner",
+                fileSize: "1.8 MB",
+                pages: 32,
+                downloadUrl: "https://owasp.org/www-project-top-ten/",
+                bookmarked: false,
+                category: "web-security"
+            },
+            {
+                id: 3,
+                title: "ISO 27001 Implementation Checklist",
+                description: "Step-by-step checklist for implementing ISO 27001 information security management.",
+                author: "ISO Standards",
+                type: "Checklist",
+                difficulty: "Advanced",
+                fileSize: "956 KB",
+                pages: 18,
+                downloadUrl: "https://www.iso.org/isoiec-27001-information-security.html",
+                bookmarked: false,
+                category: "compliance"
+            },
+            {
+                id: 4,
+                title: "Incident Response Playbook",
+                description: "Detailed playbook for handling various types of cybersecurity incidents and breaches.",
+                author: "SANS Institute",
+                type: "Whitepaper",
+                difficulty: "Intermediate",
+                fileSize: "3.2 MB",
+                pages: 67,
+                downloadUrl: "https://www.sans.org/white-papers/",
+                bookmarked: false,
+                category: "response"
+            }
+        ];
+        
+        // User activity tracking
+        let userStats = {
+            totalScans: 0,
+            threatsFound: 0,
+            avgRiskScore: 0,
+            confidence: 0,
+            scanHistory: [],
+            lastScanTime: null
+        };
+
+        function showAuthScreen(screen) {
+            // Hide all screens
+            document.querySelectorAll('.auth-screen').forEach(s => s.classList.remove('active'));
+            document.querySelector('.app-container').style.display = 'none';
+            document.getElementById('auth-container').style.display = 'flex';
+            
+            // Show requested screen
+            document.getElementById(screen).classList.add('active');
+        }
+
+        function showMainApp() {
+            document.getElementById('auth-container').style.display = 'none';
+            document.querySelector('.app-container').style.display = 'block';
+            showTab('learning'); // Start with learning tab like mobile app
+            initializeMobileFeatures();
+        }
+
+        function showWelcome() {
+            showAuthScreen('welcome-screen');
+        }
+
+        function showLogin() {
+            showAuthScreen('login-screen');
+        }
+
+        function showSignup() {
+            showAuthScreen('signup-screen');
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '👁️';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️‍🗨️';
+            }
+        }
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let feedback = [];
+            
+            if (password.length >= 8) strength += 25;
+            else feedback.push('At least 8 characters');
+            
+            if (/[A-Z]/.test(password)) strength += 25;
+            else feedback.push('One uppercase letter');
+            
+            if (/[a-z]/.test(password)) strength += 25;
+            else feedback.push('One lowercase letter');
+            
+            if (/[0-9]/.test(password)) strength += 25;
+            else feedback.push('One number');
+            
+            return { strength, feedback };
+        }
+
+        function updatePasswordStrength() {
+            const password = document.getElementById('signupPassword').value;
+            const { strength, feedback } = checkPasswordStrength(password);
+            
+            const strengthBar = document.querySelector('.strength-fill');
+            const strengthText = document.querySelector('.strength-text');
+            
+            strengthBar.style.width = strength + '%';
+            
+            if (strength < 50) {
+                strengthBar.style.background = '#ff4757';
+                strengthText.textContent = 'Weak - ' + feedback.join(', ');
+                strengthText.style.color = '#ff4757';
+            } else if (strength < 75) {
+                strengthBar.style.background = '#ff9500';
+                strengthText.textContent = 'Medium - ' + feedback.join(', ');
+                strengthText.style.color = '#ff9500';
+            } else {
+                strengthBar.style.background = '#00ff88';
+                strengthText.textContent = 'Strong password';
+                strengthText.style.color = '#00ff88';
+            }
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            // Simulate login process
+            const loginButton = document.querySelector('#login-screen .auth-btn.primary');
+            const originalText = loginButton.textContent;
+            loginButton.textContent = 'Signing In...';
+            loginButton.disabled = true;
+            
+            setTimeout(() => {
+                // Simulate successful login
+                currentUser = {
+                    email: email,
+                    name: email.split('@')[0],
+                    loginTime: new Date()
+                };
+                isAuthenticated = true;
+                
+                loginButton.textContent = originalText;
+                loginButton.disabled = false;
+                
+                // Clear form
+                document.getElementById('loginForm').reset();
+                
+                // Show main app
+                showMainApp();
+                
+                // Show success message
+                setTimeout(() => {
+                    alert(`Welcome back, ${currentUser.name}!`);
+                }, 500);
+            }, 1500);
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('termsCheckbox').checked;
+            
+            if (!name || !email || !password || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            const { strength } = checkPasswordStrength(password);
+            if (strength < 50) {
+                alert('Please choose a stronger password');
+                return;
+            }
+            
+            if (!terms) {
+                alert('Please accept the Terms of Service');
+                return;
+            }
+            
+            // Simulate signup process
+            const signupButton = document.querySelector('#signup-screen .auth-btn.primary');
+            const originalText = signupButton.textContent;
+            signupButton.textContent = 'Creating Account...';
+            signupButton.disabled = true;
+            
+            setTimeout(() => {
+                // Simulate successful signup
+                currentUser = {
+                    name: name,
+                    email: email,
+                    signupTime: new Date()
+                };
+                isAuthenticated = true;
+                
+                signupButton.textContent = originalText;
+                signupButton.disabled = false;
+                
+                // Clear form
+                document.getElementById('signupForm').reset();
+                document.querySelector('.strength-fill').style.width = '0%';
+                document.querySelector('.strength-text').textContent = '';
+                
+                // Show main app
+                showMainApp();
+                
+                // Show success message
+                setTimeout(() => {
+                    alert(`Welcome to Interrogative Scanner, ${currentUser.name}! Your account has been created successfully.`);
+                }, 500);
+            }, 2000);
+        }
+
+        function handleSocialLogin(provider) {
+            alert(`${provider} login would redirect to ${provider} authentication in a real app`);
+            
+            // Simulate social login success
+            setTimeout(() => {
+                currentUser = {
+                    name: `${provider} User`,
+                    email: `user@${provider.toLowerCase()}.com`,
+                    provider: provider,
+                    loginTime: new Date()
+                };
+                isAuthenticated = true;
+                showMainApp();
+                
+                setTimeout(() => {
+                    alert(`Welcome! You've successfully signed in with ${provider}.`);
+                }, 500);
+            }, 1000);
+        }
+
+        function handleForgotPassword() {
+            const email = prompt('Enter your email address to reset your password:');
+            if (email && validateEmail(email)) {
+                alert(`Password reset instructions have been sent to ${email}`);
+            } else if (email) {
+                alert('Please enter a valid email address');
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to sign out?')) {
+                currentUser = null;
+                isAuthenticated = false;
+                showWelcome();
+            }
+        }
+
+        // Initialize authentication system
+        function initAuth() {
+            // Check if user was previously logged in (in a real app, this would check localStorage/sessionStorage)
+            const wasLoggedIn = false; // localStorage.getItem('isAuthenticated') === 'true';
+            
+            if (wasLoggedIn) {
+                // Auto-login user
+                isAuthenticated = true;
+                showMainApp();
+            } else {
+                // Show welcome screen
+                showWelcome();
+            }
+            
+            // Add event listeners
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('signupForm').addEventListener('submit', handleSignup);
+            document.getElementById('signupPassword').addEventListener('input', updatePasswordStrength);
+        }
+
+        // Initialize Mobile App Features
+        function initializeMobileFeatures() {
+            enhanceLearningSection();
+            enhanceScannerSection();
+        }
+
+        function enhanceLearningSection() {
+            const learningSection = document.getElementById('learning');
+            if (!learningSection) return;
+
+            learningSection.innerHTML = `
+                <div class="learning-header" style="text-align: center; margin-bottom: 40px;">
+                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 12px; 
+                               background: linear-gradient(135deg, #4f7cff, #00ff88); 
+                               background-clip: text; -webkit-background-clip: text; 
+                               -webkit-text-fill-color: transparent;">Learning Hub</h2>
+                    <p style="color: #8892b0; font-size: 16px;">Enhance your cybersecurity knowledge</p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="learningSearch" placeholder="Search videos and documents..." 
+                           style="width: 100%; padding: 12px 20px; border-radius: 12px; border: 2px solid rgba(79,124,255,0.3);
+                                  background: rgba(255,255,255,0.05); color: white; font-size: 16px;">
+                </div>
+
+                <div class="filter-container" style="margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="filter-chip active" data-filter="All" 
+                            style="padding: 8px 16px; border-radius: 20px; border: 1px solid #00d4ff; 
+                                   background: #00d4ff; color: white; cursor: pointer;">All</button>
+                    <button class="filter-chip" data-filter="Beginner"
+                            style="padding: 8px 16px; border-radius: 20px; border: 1px solid #00d4ff; 
+                                   background: rgba(0,212,255,0.1); color: #00d4ff; cursor: pointer;">Beginner</button>
+                    <button class="filter-chip" data-filter="Intermediate"
+                            style="padding: 8px 16px; border-radius: 20px; border: 1px solid #00d4ff; 
+                                   background: rgba(0,212,255,0.1); color: #00d4ff; cursor: pointer;">Intermediate</button>
+                    <button class="filter-chip" data-filter="Advanced"
+                            style="padding: 8px 16px; border-radius: 20px; border: 1px solid #00d4ff; 
+                                   background: rgba(0,212,255,0.1); color: #00d4ff; cursor: pointer;">Advanced</button>
+                </div>
+
+                <div class="tab-container" style="display: flex; background: #f5f5f5; border-radius: 12px; padding: 4px; margin-bottom: 20px;">
+                    <button class="learning-tab active" data-tab="Videos" 
+                            style="flex: 1; padding: 12px; border: none; border-radius: 8px; background: white; 
+                                   color: #00d4ff; font-weight: 600; cursor: pointer;">📹 Videos</button>
+                    <button class="learning-tab" data-tab="Documents"
+                            style="flex: 1; padding: 12px; border: none; border-radius: 8px; background: transparent; 
+                                   color: #666; font-weight: 500; cursor: pointer;">📄 Documents</button>
+                    <button class="learning-tab" data-tab="Library"
+                            style="flex: 1; padding: 12px; border: none; border-radius: 8px; background: transparent; 
+                                   color: #666; font-weight: 500; cursor: pointer;">📚 My Library</button>
+                </div>
+
+                <div id="learningContent"></div>
+            `;
+
+            setupLearningInteractions();
+            renderLearningVideos();
+        }
+
+        function setupLearningInteractions() {
+            // Tab switching
+            document.querySelectorAll('.learning-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    document.querySelectorAll('.learning-tab').forEach(t => {
+                        t.style.background = 'transparent';
+                        t.style.color = '#666';
+                    });
+                    e.target.style.background = 'white';
+                    e.target.style.color = '#00d4ff';
+                    
+                    activeSubTab = e.target.dataset.tab;
+                    switch(activeSubTab) {
+                        case 'Videos': renderLearningVideos(); break;
+                        case 'Documents': renderLearningDocuments(); break;
+                        case 'Library': renderLearningLibrary(); break;
+                    }
+                });
+            });
+
+            // Filter chips
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-chip').forEach(c => {
+                        c.style.background = 'rgba(0,212,255,0.1)';
+                        c.style.color = '#00d4ff';
+                    });
+                    e.target.style.background = '#00d4ff';
+                    e.target.style.color = 'white';
+                    
+                    selectedFilter = e.target.dataset.filter;
+                    if (activeSubTab === 'Videos') renderLearningVideos();
+                    else if (activeSubTab === 'Documents') renderLearningDocuments();
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.getElementById('learningSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchQuery = e.target.value;
+                    if (activeSubTab === 'Videos') renderLearningVideos();
+                    else if (activeSubTab === 'Documents') renderLearningDocuments();
+                });
+            }
+        }
+
+        function renderLearningVideos() {
+            const content = document.getElementById('learningContent');
+            const filteredVideos = getFilteredLearningVideos();
+            
+            content.innerHTML = filteredVideos.map(video => `
+                <div class="video-card" style="background: #2a2d47; border-radius: 16px; margin-bottom: 20px; overflow: hidden; 
+                                               border: 1px solid rgba(79,124,255,0.1); transition: transform 0.3s ease;">
+                    <div style="position: relative; height: 200px;">
+                        <img src="${video.thumbnail}" style="width: 100%; height: 100%; object-fit: cover;" alt="${video.title}">
+                        <button onclick="playLearningVideo('${video.youtubeId}')" 
+                                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                       background: rgba(0,0,0,0.7); border: none; border-radius: 50%; 
+                                       width: 60px; height: 60px; color: white; font-size: 24px; cursor: pointer;">▶</button>
+                        <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); 
+                                    padding: 4px 8px; border-radius: 4px; color: white; font-size: 12px;">${video.duration}</div>
+                        <button onclick="toggleVideoBookmark(${video.id})" 
+                                style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.5); 
+                                       border: none; border-radius: 20px; padding: 8px; color: #00d4ff; cursor: pointer;">
+                            ${bookmarkedVideos.includes(video.id) ? '🔖' : '📑'}
+                        </button>
+                    </div>
+                    <div style="padding: 16px;">
+                        <h3 style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 4px;">${video.title}</h3>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 8px;">by ${video.channel}</p>
+                        <p style="color: #a0a0a0; font-size: 14px; line-height: 1.5; margin-bottom: 12px;">${video.description}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="difficulty-badge" style="padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;
+                                                                 background: ${getDifficultyColor(video.difficulty)}20; 
+                                                                 color: ${getDifficultyColor(video.difficulty)};">${video.difficulty}</span>
+                            <span style="color: #666; font-size: 12px;">${video.views} views</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderLearningDocuments() {
+            const content = document.getElementById('learningContent');
+            const filteredDocs = getFilteredLearningDocuments();
+            
+            content.innerHTML = filteredDocs.map(doc => `
+                <div class="document-card" style="background: #2a2d47; border-radius: 16px; padding: 20px; margin-bottom: 20px; 
+                                                   border: 1px solid rgba(79,124,255,0.1);">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 48px; height: 48px; border-radius: 24px; background: rgba(0,212,255,0.1); 
+                                    display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 24px;">
+                            ${getDocIcon(doc.type)}
+                        </div>
+                        <div style="flex: 1;">
+                            <h3 style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 2px;">${doc.title}</h3>
+                            <p style="color: #666; font-size: 14px;">by ${doc.author}</p>
+                        </div>
+                        <button onclick="toggleDocumentBookmark(${doc.id})" 
+                                style="background: none; border: none; color: #00d4ff; cursor: pointer; font-size: 20px;">
+                            ${bookmarkedDocuments.includes(doc.id) ? '🔖' : '📑'}
+                        </button>
+                    </div>
+                    <p style="color: #a0a0a0; font-size: 14px; line-height: 1.5; margin-bottom: 12px;">${doc.description}</p>
+                    <div style="display: flex; gap: 12px; margin-bottom: 16px; align-items: center;">
+                        <span style="padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;
+                                     background: ${getDifficultyColor(doc.difficulty)}20; 
+                                     color: ${getDifficultyColor(doc.difficulty)};">${doc.difficulty}</span>
+                        <span style="color: #666; font-size: 12px;">${doc.fileSize}</span>
+                        ${doc.pages ? `<span style="color: #666; font-size: 12px;">${doc.pages} pages</span>` : ''}
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="downloadLearningDocument(${doc.id})" 
+                                style="flex: 1; padding: 12px; background: #4f7cff; color: white; border: none; 
+                                       border-radius: 8px; cursor: pointer; font-weight: 600;">Download</button>
+                        <button onclick="viewLearningDocument('${doc.downloadUrl}')" 
+                                style="flex: 1; padding: 12px; background: transparent; color: #4f7cff; 
+                                       border: 1px solid #4f7cff; border-radius: 8px; cursor: pointer; font-weight: 600;">View Online</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderLearningLibrary() {
+            const content = document.getElementById('learningContent');
+            const bookmarkedVideosList = learningVideos.filter(v => bookmarkedVideos.includes(v.id));
+            const bookmarkedDocsList = learningDocuments.filter(d => bookmarkedDocuments.includes(d.id));
+            
+            if (bookmarkedVideosList.length === 0 && bookmarkedDocsList.length === 0) {
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <div style="font-size: 64px; margin-bottom: 16px;">📚</div>
+                        <h3 style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 8px;">No bookmarks yet</h3>
+                        <p style="color: #666; font-size: 14px;">Bookmark videos and documents to access them here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            if (bookmarkedVideosList.length > 0) {
+                html += '<h3 style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 16px;">Bookmarked Videos</h3>';
+                html += bookmarkedVideosList.map(video => `
+                    <div style="background: #2a2d47; border-radius: 12px; padding: 16px; margin-bottom: 12px; 
+                                display: flex; align-items: center; gap: 12px;">
+                        <img src="${video.thumbnail}" style="width: 60px; height: 40px; border-radius: 8px; object-fit: cover;">
+                        <div style="flex: 1;">
+                            <h4 style="color: white; font-size: 14px; font-weight: 600; margin-bottom: 4px;">${video.title}</h4>
+                            <p style="color: #666; font-size: 12px;">${video.channel} • ${video.duration}</p>
+                        </div>
+                        <button onclick="playLearningVideo('${video.youtubeId}')" 
+                                style="padding: 8px 12px; background: #4f7cff; color: white; border: none; 
+                                       border-radius: 6px; cursor: pointer; font-size: 12px;">▶ Watch</button>
+                    </div>
+                `).join('');
+            }
+            
+            if (bookmarkedDocsList.length > 0) {
+                html += '<h3 style="color: white; font-size: 18px; font-weight: 600; margin: 24px 0 16px 0;">Bookmarked Documents</h3>';
+                html += bookmarkedDocsList.map(doc => `
+                    <div style="background: #2a2d47; border-radius: 12px; padding: 16px; margin-bottom: 12px; 
+                                display: flex; align-items: center; gap: 12px;">
+                        <div style="font-size: 24px;">${getDocIcon(doc.type)}</div>
+                        <div style="flex: 1;">
+                            <h4 style="color: white; font-size: 14px; font-weight: 600; margin-bottom: 4px;">${doc.title}</h4>
+                            <p style="color: #666; font-size: 12px;">${doc.author} • ${doc.fileSize}</p>
+                        </div>
+                        <button onclick="viewLearningDocument('${doc.downloadUrl}')" 
+                                style="padding: 8px 12px; background: #4f7cff; color: white; border: none; 
+                                       border-radius: 6px; cursor: pointer; font-size: 12px;">📄 View</button>
+                    </div>
+                `).join('');
+            }
+            
+            content.innerHTML = html;
+        }
+
+        // Helper functions
+        function getFilteredLearningVideos() {
+            let filtered = learningVideos;
+            if (selectedFilter !== 'All') {
+                filtered = filtered.filter(v => v.difficulty === selectedFilter);
+            }
+            if (searchQuery) {
+                filtered = filtered.filter(v => 
+                    v.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    v.description.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+            return filtered;
+        }
+
+        function getFilteredLearningDocuments() {
+            let filtered = learningDocuments;
+            if (selectedFilter !== 'All') {
+                filtered = filtered.filter(d => d.difficulty === selectedFilter);
+            }
+            if (searchQuery) {
+                filtered = filtered.filter(d => 
+                    d.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    d.description.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+            return filtered;
+        }
+
+        function getDifficultyColor(difficulty) {
+            switch(difficulty) {
+                case 'Beginner': return '#4CAF50';
+                case 'Intermediate': return '#FF9800';
+                case 'Advanced': return '#F44336';
+                default: return '#4f7cff';
+            }
+        }
+
+        function getDocIcon(type) {
+            switch(type) {
+                case 'PDF': return '📄';
+                case 'Guide': return '📖';
+                case 'Whitepaper': return '📋';
+                case 'Checklist': return '✅';
+                default: return '📄';
+            }
+        }
+
+        function playLearningVideo(youtubeId) {
+            window.open(`https://www.youtube.com/watch?v=${youtubeId}`, '_blank');
+        }
+
+        function toggleVideoBookmark(videoId) {
+            const index = bookmarkedVideos.indexOf(videoId);
+            if (index > -1) {
+                bookmarkedVideos.splice(index, 1);
+            } else {
+                bookmarkedVideos.push(videoId);
+            }
+            
+            if (activeSubTab === 'Videos') renderLearningVideos();
+            else if (activeSubTab === 'Library') renderLearningLibrary();
+        }
+
+        function toggleDocumentBookmark(docId) {
+            const index = bookmarkedDocuments.indexOf(docId);
+            if (index > -1) {
+                bookmarkedDocuments.splice(index, 1);
+            } else {
+                bookmarkedDocuments.push(docId);
+            }
+            
+            if (activeSubTab === 'Documents') renderLearningDocuments();
+            else if (activeSubTab === 'Library') renderLearningLibrary();
+        }
+
+        function downloadLearningDocument(docId) {
+            const doc = learningDocuments.find(d => d.id === docId);
+            if (!doc) return;
+            
+            alert(`Demo Mode: In a real app, "${doc.title}" would be downloaded from a secure server.`);
+        }
+
+        function viewLearningDocument(url) {
+            window.open(url, '_blank');
+        }
+
+        function enhanceScannerSection() {
+            setupScannerInteractions();
+        }
+
+        function setupScannerInteractions() {
+            // Enhanced scanner functionality matching mobile app
+            window.selectScanType = function(type) {
+                document.querySelectorAll('.scan-type-card').forEach(card => {
+                    card.style.border = '2px solid rgba(79,124,255,0.3)';
+                });
+                event.target.closest('.scan-type-card').style.border = '2px solid #4f7cff';
+                selectedScanType = type;
+            };
+
+            window.selectTarget = function(target) {
+                document.querySelectorAll('.target-btn').forEach(btn => {
+                    btn.style.background = 'rgba(79,124,255,0.1)';
+                    btn.style.color = '#4f7cff';
+                    btn.style.border = '1px solid #4f7cff';
+                });
+                event.target.style.background = '#4f7cff';
+                event.target.style.color = 'white';
+                event.target.style.border = 'none';
+                
+                selectedTarget = target;
+                
+                if (target === 'file') {
+                    document.getElementById('file-upload-section').style.display = 'block';
+                    document.getElementById('url-scan-section').style.display = 'none';
+                } else {
+                    document.getElementById('file-upload-section').style.display = 'none';
+                    document.getElementById('url-scan-section').style.display = 'block';
+                }
+            };
+
+            window.handleFileSelect = function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                selectedFile = file;
+                
+                // Show selected file
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileSize').textContent = formatFileSize(file.size);
+                document.getElementById('fileIcon').textContent = getFileIcon(file.name);
+                document.getElementById('selected-file').style.display = 'block';
+                document.getElementById('scan-action').style.display = 'block';
+            };
+
+            window.removeFile = function() {
+                selectedFile = null;
+                document.getElementById('selected-file').style.display = 'none';
+                document.getElementById('scan-action').style.display = 'none';
+                document.getElementById('fileInput').value = '';
+            };
+
+            window.startScan = function() {
+                if (selectedTarget === 'url') {
+                    const url = document.getElementById('urlInput').value;
+                    if (!url) {
+                        alert('Please enter a URL to scan');
+                        return;
+                    }
+                    selectedUrl = url;
+                } else if (!selectedFile) {
+                    alert('Please select a file to scan');
+                    return;
+                }
+                
+                performAdvancedScan();
+            };
+        }
+
+        function performAdvancedScan() {
+            // Hide scan action and show progress
+            document.getElementById('scan-action').style.display = 'none';
+            document.getElementById('scan-progress').style.display = 'block';
+            
+            const phases = [
+                { text: 'Initializing scan engine...', progress: 10 },
+                { text: 'Analyzing file signature...', progress: 25 },
+                { text: 'Checking for malware patterns...', progress: 40 },
+                { text: 'Scanning for vulnerabilities...', progress: 60 },
+                { text: 'Performing deep analysis...', progress: 80 },
+                { text: 'Generating security report...', progress: 95 },
+                { text: 'Scan complete!', progress: 100 }
+            ];
+            
+            let currentPhase = 0;
+            
+            const updateProgress = () => {
+                if (currentPhase < phases.length) {
+                    const phase = phases[currentPhase];
+                    document.getElementById('scan-phase').textContent = phase.text;
+                    document.getElementById('progress-bar').style.width = phase.progress + '%';
+                    
+                    // Update scan details
+                    const details = document.getElementById('scan-details');
+                    details.innerHTML = `
+                        <div>🔍 ${phase.text}</div>
+                        <div style="margin-top: 8px; color: #4f7cff;">Progress: ${phase.progress}%</div>
+                    `;
+                    
+                    currentPhase++;
+                    
+                    if (currentPhase < phases.length) {
+                        setTimeout(updateProgress, 1500);
+                    } else {
+                        setTimeout(showScanResults, 1000);
+                    }
+                }
+            };
+            
+            updateProgress();
+        }
+
+        function showScanResults() {
+            document.getElementById('scan-progress').style.display = 'none';
+            
+            const isClean = Math.random() > 0.3; // 70% chance of clean result
+            const threatLevel = isClean ? 'Clean' : ['Low Risk', 'Medium Risk', 'High Risk'][Math.floor(Math.random() * 3)];
+            const threatColor = isClean ? '#4CAF50' : threatLevel === 'Low Risk' ? '#FF9800' : threatLevel === 'Medium Risk' ? '#FF5722' : '#F44336';
+            
+            const scanTarget = selectedFile ? selectedFile.name : selectedUrl;
+            
+            document.getElementById('scan-results').innerHTML = `
+                <div style="background: #2a2d47; border-radius: 16px; padding: 24px; margin-bottom: 20px;">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <div style="font-size: 64px; margin-bottom: 16px;">${isClean ? '✅' : '⚠️'}</div>
+                        <h3 style="color: white; font-size: 24px; font-weight: 700; margin-bottom: 8px;">Scan Complete</h3>
+                        <div style="padding: 8px 16px; border-radius: 20px; background: ${threatColor}20; 
+                                    color: ${threatColor}; font-weight: 600; display: inline-block;">${threatLevel}</div>
+                    </div>
+                    
+                    <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                        <h4 style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 16px;">Scan Summary</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div>
+                                <p style="color: #666; font-size: 12px; margin-bottom: 4px;">Target</p>
+                                <p style="color: white; font-size: 14px; font-weight: 600;">${scanTarget}</p>
+                            </div>
+                            <div>
+                                <p style="color: #666; font-size: 12px; margin-bottom: 4px;">Scan Type</p>
+                                <p style="color: white; font-size: 14px; font-weight: 600;">${selectedScanType === 'express' ? 'Express' : 'Deep Analysis'}</p>
+                            </div>
+                            <div>
+                                <p style="color: #666; font-size: 12px; margin-bottom: 4px;">Threats Found</p>
+                                <p style="color: white; font-size: 14px; font-weight: 600;">${isClean ? '0' : Math.floor(Math.random() * 5) + 1}</p>
+                            </div>
+                            <div>
+                                <p style="color: #666; font-size: 12px; margin-bottom: 4px;">Scan Duration</p>
+                                <p style="color: white; font-size: 14px; font-weight: 600;">${Math.floor(Math.random() * 30) + 15}s</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${!isClean ? `
+                    <div style="background: rgba(244,67,54,0.1); border: 1px solid #f44336; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                        <h4 style="color: #f44336; font-size: 16px; font-weight: 600; margin-bottom: 12px;">⚠️ Threats Detected</h4>
+                        <div style="color: #f44336; font-size: 14px; line-height: 1.6;">
+                            <div>• Suspicious file signature detected</div>
+                            <div>• Potential malware patterns found</div>
+                            <div>• Recommend quarantine and further analysis</div>
+                        </div>
+                    </div>
+                    ` : `
+                    <div style="background: rgba(76,175,80,0.1); border: 1px solid #4CAF50; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                        <h4 style="color: #4CAF50; font-size: 16px; font-weight: 600; margin-bottom: 12px;">✅ All Clear</h4>
+                        <div style="color: #4CAF50; font-size: 14px; line-height: 1.6;">
+                            <div>• No threats detected</div>
+                            <div>• File appears to be safe</div>
+                            <div>• No suspicious patterns found</div>
+                        </div>
+                    </div>
+                    `}
+                    
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="resetScanner()" 
+                                style="flex: 1; padding: 12px; background: transparent; color: #4f7cff; 
+                                       border: 1px solid #4f7cff; border-radius: 8px; cursor: pointer; font-weight: 600;">New Scan</button>
+                        <button onclick="downloadReport()" 
+                                style="flex: 1; padding: 12px; background: #4f7cff; color: white; border: none; 
+                                       border-radius: 8px; cursor: pointer; font-weight: 600;">Download Report</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('scan-results').style.display = 'block';
+        }
+
+        function resetScanner() {
+            selectedFile = null;
+            selectedUrl = '';
+            document.getElementById('selected-file').style.display = 'none';
+            document.getElementById('scan-action').style.display = 'none';
+            document.getElementById('scan-progress').style.display = 'none';
+            document.getElementById('scan-results').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('urlInput').value = '';
+        }
+
+        function downloadReport() {
+            alert('Demo Mode: In a real app, a detailed security report would be downloaded as a PDF.');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            switch(ext) {
+                case 'pdf': return '📄';
+                case 'doc': case 'docx': return '📝';
+                case 'txt': return '📃';
+                case 'jpg': case 'jpeg': case 'png': case 'gif': return '🖼️';
+                case 'mp4': case 'avi': case 'mov': return '🎬';
+                case 'zip': case 'rar': return '📦';
+                case 'exe': return '⚙️';
+                default: return '📄';
+            }
+        }
+
+        // Initialize drag and drop when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setupDragAndDrop();
+            initAuth();
+        });
+    </script>
+</body>
+</html>

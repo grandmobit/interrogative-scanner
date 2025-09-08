@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "Interrogative Scanner",
+    "slug": "interrogative-scanner",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./images/logos/logo 1.jpg",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0f1419"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.interrogativescanner.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./images/logos/logo 1.jpg",
+        "backgroundColor": "#0f1419"
+      },
+      "package": "com.interrogativescanner.app",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.INTERNET"
+      ]
+    },
+    "web": {
+      "favicon": "./images/logos/logo 1.jpg",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-document-picker",
+      "expo-file-system"
+    ],
+    "scheme": "interrogative-scanner",
+    "platforms": ["ios", "android", "web"]
+  }
+}

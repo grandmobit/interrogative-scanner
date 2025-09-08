@@ -1,0 +1,13 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="learnGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path d="M4 19V6.2C4 5.0799 4 4.51984 4.21799 4.09202C4.40973 3.71569 4.71569 3.40973 5.09202 3.21799C5.51984 3 6.0799 3 7.2 3H16.8C17.9201 3 18.4802 3 18.908 3.21799C19.2843 3.40973 19.5903 3.71569 19.782 4.09202C20 4.51984 20 5.0799 20 6.2V17L16 15L12 17L8 15L4 17V19Z" stroke="url(#learnGradient)" stroke-width="1.5" fill="none"/>
+  <circle cx="12" cy="8" r="2" stroke="url(#learnGradient)" stroke-width="1" fill="none"/>
+  <path d="M8 13H16M8 16H14" stroke="url(#learnGradient)" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="12" cy="8" r="0.5" fill="url(#learnGradient)" opacity="0.8"/>
+</svg>

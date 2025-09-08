@@ -1,0 +1,22 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="scanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff0080;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ff88;stop-opacity:1" />
+    </linearGradient>
+    <filter id="scanGlow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <circle cx="12" cy="12" r="9" stroke="url(#scanGradient)" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <circle cx="12" cy="12" r="6" stroke="url(#scanGradient)" stroke-width="1" fill="none" opacity="0.6"/>
+  <circle cx="12" cy="12" r="3" stroke="url(#scanGradient)" stroke-width="1" fill="none" opacity="0.4"/>
+  <circle cx="12" cy="12" r="1" fill="url(#scanGradient)"/>
+  <path d="M12 3V6M12 18V21M3 12H6M18 12H21" stroke="url(#scanGradient)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M5.64 5.64L7.76 7.76M16.24 16.24L18.36 18.36M5.64 18.36L7.76 16.24M16.24 7.76L18.36 5.64" stroke="url(#scanGradient)" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+</svg>
